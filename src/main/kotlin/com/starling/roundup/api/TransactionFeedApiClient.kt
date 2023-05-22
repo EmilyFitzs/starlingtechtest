@@ -1,28 +1,38 @@
 package com.starling.roundup.api
 
+import com.starling.roundup.api.model.FeedItem
 import com.google.gson.Gson
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.time.LocalDate
-import java.time.ZoneOffset
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+import java.time.*
 import java.time.format.DateTimeFormatter
+import java.util.*
 
-class TransactionFeedApiClient(private val accessToken: String) {
+interface TransactionFeedApiClientInterface {
+    fun getTransactions(
+        accountUid: String,
+        categoryUid: String,
+        startDate: ZonedDateTime? = null,
+        endDate: ZonedDateTime? = null
+    ): List<FeedItem>
+}
+
+@Component
+class TransactionFeedApiClient(@Value("\${accessToken}") private val accessToken: String): TransactionFeedApiClientInterface {
     private val httpClient = OkHttpClient()
     private val baseUrl = "https://api-sandbox.starlingbank.com"
 
-    fun getTransactions(accountUid: String, categoryUid: String): List<Transaction> {
-        val currentDate = LocalDate.now()
-        val startDate = currentDate.minusWeeks(1)
-        val endDate = currentDate
-
+    override fun getTransactions(accountUid: String, categoryUid: String, startDate: ZonedDateTime?, endDate: ZonedDateTime?): List<FeedItem> {
+        val endDateAdjusted: ZonedDateTime = endDate ?: ZonedDateTime.now()
+        val startDateAdjusted: ZonedDateTime = startDate ?: endDateAdjusted.minusDays(7)
         val urlBuilder = "$baseUrl/api/v2/feed/account/$accountUid/category/$categoryUid/transactions-between".toHttpUrlOrNull()
             ?.newBuilder()
 
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        urlBuilder?.addQueryParameter("minTransactionTimestamp", startDate.atStartOfDay().toInstant(ZoneOffset.UTC).toString())
-        urlBuilder?.addQueryParameter("maxTransactionTimestamp", endDate.atStartOfDay().toInstant(ZoneOffset.UTC).toString())
+        urlBuilder?.addQueryParameter("minTransactionTimestamp", startDateAdjusted.format(DateTimeFormatter.ISO_ZONED_DATE_TIME))
+        urlBuilder?.addQueryParameter("maxTransactionTimestamp", endDateAdjusted.format(DateTimeFormatter.ISO_ZONED_DATE_TIME))
 
         val url = urlBuilder?.build().toString()
 
@@ -30,6 +40,7 @@ class TransactionFeedApiClient(private val accessToken: String) {
             .url(url)
             .addHeader("Accept", "application/json")
             .addHeader("Authorization", "Bearer $accessToken")
+            .get()
             .build()
 
         val response = httpClient.newCall(request).execute()
@@ -41,15 +52,8 @@ class TransactionFeedApiClient(private val accessToken: String) {
         val transactionResponse = gson.fromJson(responseBody, TransactionResponse::class.java)
 
         // Extract the list of transactions from the response
-        return transactionResponse.transactions ?: emptyList()
+        return transactionResponse.feedItems ?: emptyList()
     }
 }
 
-data class TransactionResponse(val transactions: List<Transaction>?)
-
-data class Transaction(
-    val transactionId: String,
-    val amount: Double,
-    val date: String,
-    val category: String
-)
+data class TransactionResponse(val feedItems: List<FeedItem>?)

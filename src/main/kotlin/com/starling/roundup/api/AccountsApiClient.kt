@@ -3,9 +3,17 @@ package com.starling.roundup.api
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
-class AccountsApiClient(private val accessToken: String) {
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+
+@Component
+class AccountsApiClient(@Value("\${accessToken}") private val accessToken: String) {
     private val httpClient = OkHttpClient()
-    var baseUrl = "https://api-sandbox.starlingbank.com"
+    private val baseUrl = "https://api-sandbox.starlingbank.com"
+
+    private val logger: Logger = LoggerFactory.getLogger(AccountsApiClient::class.java)
 
     fun getAccounts(): List<Account> {
         val url = "$baseUrl/api/v2/accounts"
@@ -16,16 +24,28 @@ class AccountsApiClient(private val accessToken: String) {
             .addHeader("Authorization", "Bearer $accessToken")
             .build()
 
-        val response = httpClient.newCall(request).execute()
+        try {
+            val response = httpClient.newCall(request).execute()
 
-        val responseBody = response.body?.string()
+            if (response.isSuccessful) {
+                val responseBody = response.body?.string()
 
-        // Parse the JSON response
-        val gson = Gson()
-        val accountResponse = gson.fromJson(responseBody, AccountResponse::class.java)
+                // Parse JSON response
+                val gson = Gson()
+                val accountResponse = gson.fromJson(responseBody, AccountResponse::class.java)
 
-        // Extract the list of accounts from the response
-        return accountResponse.accounts ?: emptyList()
+                // Extract list of accounts from the response
+                val accounts = accountResponse.accounts ?: emptyList()
+                logger.info("Retrieved ${accounts.size} accounts")
+                return accounts
+            } else {
+                logger.error("Failed to retrieve accounts. Response code: ${response.code}")
+            }
+        } catch (e: Exception) {
+            logger.error("An error occurred while retrieving accounts", e)
+        }
+
+        return emptyList()
     }
 }
 
