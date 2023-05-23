@@ -3,7 +3,7 @@ This project implements a "round-up" feature for Starling customers using the pu
 
 # Validate/Refresh the Access Token:
 - Go to the Starling Bank Developers Account and refresh/generate a new access token.
-- Replace the access token on file "application.properties" in the bearerToken
+- Replace the access token on file "application.properties"
 
 # Build & Run
 To build the project, make sure you have Gradle installed. Run the following command in the project root directory:
