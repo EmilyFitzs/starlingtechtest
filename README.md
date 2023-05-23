@@ -8,7 +8,7 @@ This project implements a "round-up" feature for Starling customers using the pu
 # Build & Run
 To build the project, make sure you have Gradle installed. Run the following command in the project root directory:
 
-gradle clean build
+**_gradle clean build_**
 
 This command will run all tests.
 
