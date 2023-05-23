@@ -1,4 +1,4 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients
 
 import com.google.gson.Gson
 import okhttp3.OkHttpClient

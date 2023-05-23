@@ -1,4 +1,4 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients.model
 
 data class RawTransaction(
     val id: String,

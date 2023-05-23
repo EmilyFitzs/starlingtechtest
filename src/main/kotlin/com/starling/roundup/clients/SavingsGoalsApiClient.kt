@@ -1,15 +1,14 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients
 
 import java.util.*
-import CreateOrUpdateSavingsGoalResponseV2
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import com.google.gson.Gson
-import com.starling.roundup.api.model.CurrencyAndAmount
-import com.starling.roundup.api.model.SavingsGoalV2
-import com.starling.roundup.api.model.TopUpRequestV2
+import com.starling.roundup.clients.model.CurrencyAndAmount
+import com.starling.roundup.clients.model.SavingsGoalV2
+import com.starling.roundup.clients.model.TopUpRequestV2
 import okhttp3.Response
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -43,23 +42,6 @@ class SavingsGoalsApiClient(
     private fun <T> parseJsonResponse(responseBody: String?, clazz: Class<T>): T {
         val gson = Gson()
         return gson.fromJson(responseBody, clazz) ?: throw IllegalStateException("Failed to parse response")
-    }
-
-    fun createSavingsGoal(accountUid: String): CreateOrUpdateSavingsGoalResponseV2 {
-        val url = "$baseUrl/api/v2/account/$accountUid/savings-goals"
-
-        val requestBody = SavingsGoalRequest(savingsGoalName, currency, CurrencyAndAmount(currency, savingsGoalTarget))
-        val jsonRequestBody = Gson().toJson(requestBody)
-        val mediaType = "application/json".toMediaType()
-
-        val request = createRequestBuilder(url)
-            .put(jsonRequestBody.toRequestBody(mediaType))
-            .build()
-
-        val response = executeRequest(request)
-        val responseBody = response.body?.string()
-
-        return parseJsonResponse(responseBody, CreateOrUpdateSavingsGoalResponseV2::class.java)
     }
 
     fun addMoneyToSavingsGoal(accountUid: String, amount: CurrencyAndAmount, savingsGoalUid: String? = null, transferUid: String? = null): TopUpRequestV2 {

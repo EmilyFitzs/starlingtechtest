@@ -1,4 +1,4 @@
-package com.starling.roundup.api.model
+package com.starling.roundup.clients.model
 
 enum class TransactionStatus {
     UPCOMING,

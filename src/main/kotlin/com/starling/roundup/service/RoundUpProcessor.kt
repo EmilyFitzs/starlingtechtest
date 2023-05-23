@@ -1,10 +1,12 @@
-package com.starling.roundup.api
+package com.starling.roundup.service
 
-import com.starling.roundup.api.model.FeedItem
-import com.starling.roundup.api.model.CurrencyAndAmount
-import com.starling.roundup.api.model.Direction
-import com.starling.roundup.api.model.TransactionSource
-import com.starling.roundup.api.model.TransactionStatus
+import com.starling.roundup.clients.SavingsGoalsApiClient
+import com.starling.roundup.clients.TransactionFeedApiClientInterface
+import com.starling.roundup.clients.model.FeedItem
+import com.starling.roundup.clients.model.CurrencyAndAmount
+import com.starling.roundup.clients.model.Direction
+import com.starling.roundup.clients.model.TransactionSource
+import com.starling.roundup.clients.model.TransactionStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -26,7 +28,7 @@ class RoundUpProcessor(
         TransactionSource.STARLING_PAY_STRIPE
     )
 
-    fun processRoundUpForWeek(accountUid: String, categoryUid: String, startDate: ZonedDateTime? = null, endDate: ZonedDateTime? = null) {
+    fun processRoundUpForWeek(accountUid: String, categoryUid: String, startDate: ZonedDateTime? = null, endDate: ZonedDateTime? = null): Double {
         try {
             val transactions = transactionFeedApiClient.getTransactions(accountUid, categoryUid, startDate, endDate)
             val roundUpAmount = calculateRoundUpAmount(transactions)
@@ -37,9 +39,11 @@ class RoundUpProcessor(
                 val amountToTransfer = CurrencyAndAmount("GBP", roundUpAmount.times(100).toInt())
                 savingsGoalsApiClient.addMoneyToSavingsGoal(accountUid, amountToTransfer, savingsGoalUid)
             }
+            return roundUpAmount
         } catch (e: Exception) {
             logger.error("Error occurred during round-up processing.", e)
         }
+        return 0.0
     }
 
     private fun calculateRoundUpAmount(transactions: List<FeedItem>): Double {

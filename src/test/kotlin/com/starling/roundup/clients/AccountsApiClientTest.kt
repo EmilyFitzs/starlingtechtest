@@ -1,4 +1,4 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients
 
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import org.springframework.beans.factory.annotation.Autowired

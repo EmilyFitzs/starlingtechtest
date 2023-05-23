@@ -1,7 +1,8 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients
 
-import com.starling.roundup.api.model.FeedItem
+import com.starling.roundup.clients.model.FeedItem
 import com.google.gson.Gson
+import com.starling.roundup.service.RoundUpProcessor
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.mockk.*
 import org.junit.jupiter.api.Test

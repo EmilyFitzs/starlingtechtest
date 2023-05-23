@@ -1,6 +1,6 @@
-package com.starling.roundup.api
+package com.starling.roundup.clients
 
-import com.starling.roundup.api.model.FeedItem
+import com.starling.roundup.clients.model.FeedItem
 import com.google.gson.Gson
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
