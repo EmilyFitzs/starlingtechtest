@@ -1,5 +1,6 @@
 # Starling-Round-Up-Challenge
 By Emily Fitzsimmons
+
 This project implements a "round-up" feature for Starling customers using the public developer API. It allows customers to round up their transactions and transfer the rounded-up amount to a savings goal.
 
 # Validate/Refresh the Access Token:
