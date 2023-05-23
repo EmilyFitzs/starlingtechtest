@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Test
 
 @SpringBootTest
 @ActiveProfiles("test")
-class TransactionFeedApiClientTest{
+class TransactionFeedApiClientTest {
 
     @Autowired
     lateinit var transactionFeedApiClient: TransactionFeedApiClient
     @Autowired
     lateinit var accountsApiClient: AccountsApiClient
+
     @Test
     fun getTransactionsReturnsExpectedValue() {
         val accounts = accountsApiClient.getAccounts()

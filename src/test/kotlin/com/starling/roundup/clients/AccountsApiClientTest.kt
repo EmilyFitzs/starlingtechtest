@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 @SpringBootTest
 @ActiveProfiles("test")
-class AccountsApiClientTest{
+class AccountsApiClientTest {
 
     @Autowired
     lateinit var accountsApiClient: AccountsApiClient
