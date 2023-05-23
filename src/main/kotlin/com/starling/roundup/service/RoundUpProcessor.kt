@@ -28,16 +28,21 @@ class RoundUpProcessor(
         TransactionSource.STARLING_PAY_STRIPE
     )
 
-    fun processRoundUpForWeek(accountUid: String, categoryUid: String, startDate: ZonedDateTime? = null, endDate: ZonedDateTime? = null): Double {
+    fun processRoundUpForWeek(
+        accountUid: String,
+        categoryUid: String,
+        startDate: ZonedDateTime? = null,
+        endDate: ZonedDateTime? = null,
+        savingsGoalUid: String? = null)
+    : Double {
         try {
             val transactions = transactionFeedApiClient.getTransactions(accountUid, categoryUid, startDate, endDate)
             val roundUpAmount = calculateRoundUpAmount(transactions)
 
             if (roundUpAmount > 0) {
-                val savingsGoal = savingsGoalsApiClient.getSavingsGoal(accountUid)
-                val savingsGoalUid = savingsGoal.savingsGoalUid
+                val savingsGoalUidParam = savingsGoalUid ?: savingsGoalsApiClient.getSavingsGoal(accountUid).savingsGoalUid
                 val amountToTransfer = CurrencyAndAmount("GBP", roundUpAmount.times(100).toInt())
-                savingsGoalsApiClient.addMoneyToSavingsGoal(accountUid, amountToTransfer, savingsGoalUid)
+                savingsGoalsApiClient.addMoneyToSavingsGoal(accountUid, amountToTransfer, savingsGoalUidParam)
             }
             return roundUpAmount
         } catch (e: Exception) {

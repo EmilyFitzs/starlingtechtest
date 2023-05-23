@@ -1,7 +1,9 @@
 package com.starling.roundup.web
 
+import com.starling.roundup.clients.AccountsApiClient
 import com.starling.roundup.service.RoundUpProcessor
 import com.starling.roundup.web.model.RoundupResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +19,8 @@ import java.time.ZoneOffset
 
 @RestController
 class RoundupController(private val roundupProcessor: RoundUpProcessor) {
+    @Autowired
+    lateinit var accountsApiClient: AccountsApiClient
     @PutMapping("/api/v2/account/{accountUid}/savings-goals/{savingsGoalUid}/roundup/transactions-between")
     fun roundUp(
         @PathVariable("accountUid") accountUid: UUID?,
@@ -26,10 +30,18 @@ class RoundupController(private val roundupProcessor: RoundUpProcessor) {
     ): ResponseEntity<RoundupResponse> {
         return try {
             val accountUidStr = accountUid?.toString()
+            var accounts = accountsApiClient.getAccounts()
+            accounts = accounts.filter { it.accountUid == accountUidStr }
+            if (accounts.size == 0) {
+                val response = RoundupResponse("Account Uid ${accountUid} does not exist", 0.0)
+                ResponseEntity(response, HttpStatus.BAD_REQUEST)
+            }
+            val account = accounts[0]
+            val categoryUid = account.defaultCategory
             val savingsGoalUidStr = savingsGoalUid?.toString()
 
             // Call the RoundUpProcessor to process the round-up
-            val roundUpAmount = roundupProcessor.processRoundUpForWeek(accountUidStr!!, savingsGoalUidStr!!, minTransactionTimestamp?.atZoneSameInstant(
+            val roundUpAmount = roundupProcessor.processRoundUpForWeek(accountUidStr!!, categoryUid, minTransactionTimestamp?.atZoneSameInstant(
                 ZoneOffset.UTC), maxTransactionTimestamp?.atZoneSameInstant(ZoneOffset.UTC))
 
             val response = RoundupResponse("Roundup completed successfully", roundUpAmount)
