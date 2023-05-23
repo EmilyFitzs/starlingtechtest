@@ -17,8 +17,7 @@ You can run the application directly from Main.kt
 # Further Improvements
 Here are some potential areas for further improvement or expansion of the round-up feature:
 
-Error Handling: Enhance error handling to provide more detailed error messages and appropriate HTTP status codes in case of failures or invalid inputs.
-Logging: Implement comprehensive logging to facilitate troubleshooting and debugging.
-Automated Deployment: Configure automated deployment pipelines to streamline the deployment process.
-Monitoring & Metrics: Implement monitoring and metrics collection to gain insights into the usage and performance of the round-up feature.
-These improvements can be implemented based on the specific requirements and needs of the project.
+- Error Handling: Enhance error handling to provide more detailed error messages and appropriate HTTP status codes in case of failures or invalid inputs.
+- Logging: Implement comprehensive logging to facilitate troubleshooting and debugging.
+- Automated Deployment: Configure automated deployment pipelines to streamline the deployment process.
+- Monitoring & Metrics: Implement monitoring and metrics collection to gain insights into the usage and performance of the round-up feature.
