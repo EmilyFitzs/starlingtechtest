@@ -5,7 +5,7 @@ This project implements a "round-up" feature for Starling customers using the pu
 
 # Validate/Refresh the Access Token:
 - Go to the Starling Bank Developers Account and refresh/generate a new access token.
-- Create an application.properties file and add your access token. See "application.properties.example" for reference.
+- Create an application.properties file and add your access token. You will also need to create a savings goal at https://developer.starlingbank.com/docs and insert your savingsGoalUuid in this file. See "application.properties.example" for reference.
 
 # Build & Run
 To build the project, make sure you have Gradle installed. Run the following command in the project root directory:
