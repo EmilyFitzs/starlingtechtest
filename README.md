@@ -22,6 +22,8 @@ The RoundupController exposes the round-up functionality as an API endpoint. It 
 Here are some potential areas for further improvement or expansion of the round-up feature:
 
 - Swagger docs for the API endpoint, using Open API.
+- Currently, the application uses an access token which expires every 24 hours. Preferably, the app would check the expiry time on the access token and use the refresh token to get new access tokens.
+- Extensive testing: Due to time constraints, tests are very limited. Ideally the tests should aim to cover different scenarios, such as transactions with varying amounts and currencies.
 - Error Handling: Enhance error handling to provide more detailed error messages and appropriate HTTP status codes in case of failures or invalid inputs.
 - Logging: Implement comprehensive logging to facilitate troubleshooting and debugging.
 - Automated Deployment: Configure automated deployment pipelines to streamline the deployment process.
