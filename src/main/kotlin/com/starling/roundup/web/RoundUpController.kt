@@ -21,6 +21,7 @@ import java.time.ZoneOffset
 class RoundupController(private val roundupProcessor: RoundUpProcessor) {
     @Autowired
     lateinit var accountsApiClient: AccountsApiClient
+
     @PutMapping("/api/v2/account/{accountUid}/savings-goals/{savingsGoalUid}/roundup/transactions-between")
     fun roundUp(
         @PathVariable("accountUid") accountUid: UUID?,
@@ -32,8 +33,8 @@ class RoundupController(private val roundupProcessor: RoundUpProcessor) {
             val accountUidStr = accountUid?.toString()
             var accounts = accountsApiClient.getAccounts()
             accounts = accounts.filter { it.accountUid == accountUidStr }
-            if (accounts.size == 0) {
-                val response = RoundupResponse("Account Uid ${accountUid} does not exist", 0.0)
+            if (accounts.isEmpty()) {
+                val response = RoundupResponse("Account Uid $accountUid does not exist", 0.0)
                 ResponseEntity(response, HttpStatus.BAD_REQUEST)
             }
             val account = accounts[0]

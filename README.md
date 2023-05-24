@@ -5,7 +5,7 @@ This project implements a "round-up" feature for Starling customers using the pu
 
 # Validate/Refresh the Access Token:
 - Go to the Starling Bank Developers Account and refresh/generate a new access token.
-- Replace the access token on file "application.properties"
+- Create an application.properties file and add your access token. See "application.properties.example" for reference.
 
 # Build & Run
 To build the project, make sure you have Gradle installed. Run the following command in the project root directory:
@@ -16,9 +16,12 @@ This command will run all tests.
 
 You can run the application directly from Main.kt
 
+The RoundupController exposes the round-up functionality as an API endpoint. It allows clients to make HTTP requests to perform the round-up calculation and transfer funds to the savings goal. The controller handles input validation, business logic execution, and error handling, providing a clear and standardized way to interact with the round-up feature.
+
 # Further Improvements
 Here are some potential areas for further improvement or expansion of the round-up feature:
 
+- Swagger docs for the API endpoint, using Open API.
 - Error Handling: Enhance error handling to provide more detailed error messages and appropriate HTTP status codes in case of failures or invalid inputs.
 - Logging: Implement comprehensive logging to facilitate troubleshooting and debugging.
 - Automated Deployment: Configure automated deployment pipelines to streamline the deployment process.
